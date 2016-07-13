@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -19,8 +20,10 @@ func main() {
 	apiKey := os.Getenv("GOOGLE_SERVER_KEY")
 	url := "https://maps.googleapis.com/maps/api/geocode/json"
 
+	reader := bufio.NewReader(os.Stdin)
+
 	fmt.Println("Enter an address: ")
-	_, err := fmt.Scanln(&address)
+	address, err := reader.ReadString('\n')
 	checkErr(err)
 
 	request, err := http.NewRequest("GET", url, nil)
