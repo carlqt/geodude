@@ -5,7 +5,7 @@ import (
   "bufio"
   "fmt"
   // "io/ioutil"
-  // "github.com/d4l3k/go-pry/pry"
+  "github.com/d4l3k/go-pry/pry"
   "net/http"
   "os"
   "io"
@@ -53,6 +53,7 @@ func main() {
 
   client := &http.Client{}
 
+  pry.Pry()
   res, err := client.Do(request)
   checkErr(err)
   defer res.Body.Close()

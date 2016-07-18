@@ -1,4 +1,14 @@
-hash: 89dfc20c707a877b034010bcdf1f340ad158ffc329687a0ac61e3d9f781d27cf
-updated: 2016-07-13T08:08:42.187280473+08:00
-imports: []
+hash: 1865dfcdbc938dfe391ee3fcb60c5271ee6b80733f6666553b7b7fc80ef193cb
+updated: 2016-07-18T08:11:05.32457106+08:00
+imports:
+- name: github.com/d4l3k/go-pry
+  version: 7cfbbead09fd5b14baa54f67b36658d67c4e834d
+  subpackages:
+  - pry
+- name: github.com/mgutz/ansi
+  version: c286dcecd19ff979eeb73ea444e479b903f2cfcb
+- name: golang.org/x/tools
+  version: 29481a356d4ec9c4badb3e4239ba69dc979f8d03
+  subpackages:
+  - go/gcimporter15
 testImports: []

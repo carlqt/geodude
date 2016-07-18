@@ -1,2 +1,5 @@
 package: github.com/carlqt/geodude
-import: []
+import:
+- package: github.com/d4l3k/go-pry
+  subpackages:
+  - pry
