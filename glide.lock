@@ -1,14 +1,10 @@
-hash: 1865dfcdbc938dfe391ee3fcb60c5271ee6b80733f6666553b7b7fc80ef193cb
-updated: 2016-07-18T08:11:05.32457106+08:00
+hash: 4dd544db5dd6a11025493e30787e948d7bc60d6caeea99e8e1778c45a487b2cb
+updated: 2016-07-20T06:25:43.195396077+08:00
 imports:
-- name: github.com/d4l3k/go-pry
-  version: 7cfbbead09fd5b14baa54f67b36658d67c4e834d
+- name: github.com/lib/pq
+  version: 4dd446efc17690bc53e154025146f73203b18309
   subpackages:
-  - pry
-- name: github.com/mgutz/ansi
-  version: c286dcecd19ff979eeb73ea444e479b903f2cfcb
-- name: golang.org/x/tools
-  version: 29481a356d4ec9c4badb3e4239ba69dc979f8d03
-  subpackages:
-  - go/gcimporter15
+  - oid
+- name: gopkg.in/yaml.v2
+  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 testImports: []

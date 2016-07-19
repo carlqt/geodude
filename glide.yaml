@@ -1,5 +1,4 @@
-package: github.com/carlqt/geodude
+package: .
 import:
-- package: github.com/d4l3k/go-pry
-  subpackages:
-  - pry
+- package: github.com/lib/pq
+- package: gopkg.in/yaml.v2
