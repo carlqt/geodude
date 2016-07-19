@@ -1,5 +1,5 @@
 CREATE TABLE properties(
-  id integer primary key not null,
+  id serial primary key not null,
   longitude float,
   latitude float,
   address varchar(255),

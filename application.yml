@@ -1,0 +1,6 @@
+---
+development:
+  database:
+    username: carltablante
+    password:
+    name: geodude
