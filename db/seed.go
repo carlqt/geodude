@@ -59,7 +59,7 @@ func main() {
 
 
   // prepare sql statement
-  stmnt, err := db.Prepare("INSERT INTO properties(address, longitude, latitude) VALUES($1, $2, $3)")
+  stmnt, err := db.Prepare("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3)")
   checkErr(err)
   defer stmnt.Close()
 
