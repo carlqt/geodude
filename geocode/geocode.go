@@ -20,6 +20,7 @@ type GoogleGeoCode struct {
 type JsonResponse struct {
 	Status  string       `json:"status"`
 	Results []ResultBody `json:"results"`
+	ErrorMessage string `json:"error_message"`
 }
 
 type ResultBody struct {
@@ -61,7 +62,7 @@ func (g *GoogleGeoCode) request(address string) (geometry map[string]float32, er
 		geometry = jsn.Results[0].Geometry.Location
 		return geometry, nil
 	} else {
-		return nil, fmt.Errorf(jsn.Status)
+		return nil, fmt.Errorf("Status: %s\nError Message: %s", jsn.Status, jsn.ErrorMessage)
 	}
 }
 
