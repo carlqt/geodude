@@ -16,7 +16,7 @@ func main() {
 	url := "https://maps.googleapis.com/maps/api/geocode/json"
 
 	g := geocode.GoogleGeoCode{URL: url, ApiKey: apiKey}
-	lng, lat := g.Geocode("Ubi Avenue 1")
+	lng, lat := g.Geocode("xxlkajflkasdjfx")
 
 	fmt.Printf("Latitude is %f and Longitude is %f", lat, lng)
 }
