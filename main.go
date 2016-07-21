@@ -2,6 +2,7 @@ package main
 
 import (
 	// "github.com/carlqt/geodude/geocode"
+  // "github.com/iris-contrib/template/html"
 	"github.com/kataras/iris"
 	"github.com/iris-contrib/middleware/logger"
 )
@@ -26,16 +27,18 @@ func main() {
 
 	// fmt.Printf("Latitude is %f and Longitude is %f", lat, lng)
 
+	iris.StaticServe("./assets")
 	iris.Use(logger.New(iris.Logger))
 	iris.Post("/search", Search)
+	iris.Get("/", Index)
 
 	errorLogger := logger.New(iris.Logger)
 
 
-    iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
-        errorLogger.Serve(ctx)
-        ctx.Write("My Custom 404 error page ")
-    })
+  iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
+      errorLogger.Serve(ctx)
+      ctx.Write("My Custom 404 error page ")
+  })
 
 	iris.Listen(":8080")
 }
@@ -43,4 +46,8 @@ func main() {
 func Search(c *iris.Context) {
 	u := User{Name: "Madeline", Age: 16}
 	c.JSON(iris.StatusOK, u)
+}
+
+func Index(c *iris.Context) {
+  c.MustRender("hi.html", struct{ Name string }{Name: "iris"})
 }
