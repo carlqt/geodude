@@ -27,6 +27,7 @@ func main() {
 
 	// fmt.Printf("Latitude is %f and Longitude is %f", lat, lng)
 
+  // TODO endpoints: Add properties, show all properties in DB, Edit?, Search within radius
 	iris.StaticServe("./assets")
 	iris.Use(logger.New(iris.Logger))
 	iris.Post("/search", Search)
@@ -36,7 +37,7 @@ func main() {
 
 	iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
 		errorLogger.Serve(ctx)
-		ctx.Write("My Custom 404 error page ")
+		ctx.Write("404 bad page ")
 	})
 
 	iris.Listen(":8000")
@@ -48,5 +49,6 @@ func Search(c *iris.Context) {
 }
 
 func Index(c *iris.Context) {
-	c.MustRender("hi.html", struct{ Name string }{Name: "iris"})
+  u := User{Name: "Maddy", Age: 30}
+	c.MustRender("application.html", u)
 }
