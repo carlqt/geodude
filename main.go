@@ -2,9 +2,9 @@ package main
 
 import (
 	// "github.com/carlqt/geodude/geocode"
-  // "github.com/iris-contrib/template/html"
-	"github.com/kataras/iris"
+	// "github.com/iris-contrib/template/html"
 	"github.com/iris-contrib/middleware/logger"
+	"github.com/kataras/iris"
 )
 
 func checkErr(err error) {
@@ -15,7 +15,7 @@ func checkErr(err error) {
 
 type User struct {
 	Name string
-	Age int
+	Age  int
 }
 
 func main() {
@@ -34,13 +34,12 @@ func main() {
 
 	errorLogger := logger.New(iris.Logger)
 
+	iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
+		errorLogger.Serve(ctx)
+		ctx.Write("My Custom 404 error page ")
+	})
 
-  iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
-      errorLogger.Serve(ctx)
-      ctx.Write("My Custom 404 error page ")
-  })
-
-	iris.Listen(":8080")
+	iris.Listen(":8000")
 }
 
 func Search(c *iris.Context) {
@@ -49,5 +48,5 @@ func Search(c *iris.Context) {
 }
 
 func Index(c *iris.Context) {
-  c.MustRender("hi.html", struct{ Name string }{Name: "iris"})
+	c.MustRender("hi.html", struct{ Name string }{Name: "iris"})
 }
