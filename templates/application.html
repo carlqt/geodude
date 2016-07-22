@@ -7,11 +7,29 @@
   <body>
     <div class="container" ng-cloak>
       <h1>Hi {{.Name}}</h1>
-      << 1 + 1 >>
+      <% 5 + 5 %>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+          </tr>
+        </thead>
+        <tbody ng-controller="newAppController">
+          <tr ng-repeat="location in locations">
+            <td > <% location.address %> </td>
+            <td > <% location.latitude %> </td>
+            <td > <% location.longitude %> </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="assets/javascripts/application.js"></script>
   </body>
