@@ -38,6 +38,7 @@ func main() {
 	iris.Post("/search", Search)
 	iris.Get("/", Index)
 	iris.Get("/properties", propertyIndex)
+	iris.Post("/property", propertyCreate)
 
 	errorLogger := logger.New(iris.Logger)
 
@@ -62,4 +63,8 @@ func Index(c *iris.Context) {
 func propertyIndex(c *iris.Context) {
 	p := models.AllProperties()
 	c.JSON(iris.StatusOK, p)
+}
+
+func propertyCreate(c *iris.Context) {
+	_ = "breakpoint"
 }
