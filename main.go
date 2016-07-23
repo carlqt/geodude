@@ -1,7 +1,8 @@
 package main
 
 import (
-	// "github.com/carlqt/geodude/geocode"
+	"os"
+	"github.com/carlqt/geodude/geocode"
 	// "github.com/iris-contrib/template/html"
 	"github.com/carlqt/geodude/models"
 	"github.com/iris-contrib/middleware/logger"
@@ -23,6 +24,13 @@ func init() {
 	models.InitDB()
 }
 
+var g geocode.GoogleGeoCode
+
+func init() {
+	g.URL = "https://maps.googleapis.com/maps/api/geocode/json"
+	g.ApiKey = os.Getenv("GOOGLE_SERVER_KEY")
+}
+
 func main() {
 	// apiKey := os.Getenv("GOOGLE_SERVER_KEY")
 	// url := "https://maps.googleapis.com/maps/api/geocode/json"
@@ -35,10 +43,12 @@ func main() {
 	// TODO endpoints: Add properties, Edit?, Search within radius
 	iris.StaticServe("./assets")
 	iris.Use(logger.New(iris.Logger))
+	iris.Get("/ping", pong)
 	iris.Get("/search", Search)
 	iris.Get("/", Index)
 	iris.Get("/properties", propertyIndex)
 	iris.Post("/property", propertyCreate)
+	iris.Get("/convert", convert)
 
 	errorLogger := logger.New(iris.Logger)
 
@@ -51,13 +61,17 @@ func main() {
 }
 
 func Search(c *iris.Context) {
-	_ = "breakpoint"
-	u := User{Name: "Madeline", Age: 16}
-	c.JSON(iris.StatusOK, u)
+	point, err := g.Geocode(c.URLParam("location"))
+	if err != nil {
+		c.EmitError(iris.StatusInternalServerError)
+	} else {
+		p := models.NearbyProperty(point["lat"], point["lng"])	
+		c.JSON(iris.StatusOK, p)
+	}
 }
 
 func Index(c *iris.Context) {
-	u := User{Name: "Maddy", Age: 30}
+	u := User{Name: "Iris", Age: 30}
 	c.MustRender("application.html", u)
 }
 
@@ -67,5 +81,17 @@ func propertyIndex(c *iris.Context) {
 }
 
 func propertyCreate(c *iris.Context) {
-	_ = "breakpoint"
+}
+
+func convert(c *iris.Context) {
+	lat, lng := g.Geocode(c.URLParam("location"))
+
+	c.JSON(iris.StatusOK, iris.Map{
+			"lng": lng,
+			"lat": lat,
+		})
+}
+
+func pong(c *iris.Context) {
+	c.Write("pong")
 }

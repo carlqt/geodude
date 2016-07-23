@@ -31,3 +31,25 @@ func (p *Property) Create() error{
 
   return err
 }
+
+func NearbyProperty(lat float32, lng float32) []Property{
+	var p Property
+
+	properties := make([]Property, 0)
+
+	// Given the lat and lng, search the database for nearby address within a 10km radius
+	rows, err := db.Query(`SELECT address, latitude, longitude FROM properties 
+		WHERE earth_box(ll_to_earth($1, $2), 200) @> ll_to_earth(latitude, longitude)`, lat, lng)	
+
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		rows.Scan(&p.Address, &p.Lat, &p.Lng)	
+		properties = append(properties, p)
+	}
+
+	return properties
+}

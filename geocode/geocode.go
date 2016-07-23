@@ -66,12 +66,8 @@ func (g *GoogleGeoCode) request(address string) (geometry map[string]float32, er
 	}
 }
 
-func (g *GoogleGeoCode) Geocode(address string) (float32, float32) {
-	points, err := g.request(address)
+func (g *GoogleGeoCode) Geocode(address string) (points map[string]float32, err error) {
+	points, err = g.request(address)
 
-	if err != nil {
-		panic(err)
-	}
-
-	return points["lng"], points["lat"]
+	return points, err
 }
