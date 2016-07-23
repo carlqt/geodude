@@ -32,10 +32,10 @@ func main() {
 
 	// fmt.Printf("Latitude is %f and Longitude is %f", lat, lng)
 
-	// TODO endpoints: Add properties, show all properties in DB, Edit?, Search within radius
+	// TODO endpoints: Add properties, Edit?, Search within radius
 	iris.StaticServe("./assets")
 	iris.Use(logger.New(iris.Logger))
-	iris.Post("/search", Search)
+	iris.Get("/search", Search)
 	iris.Get("/", Index)
 	iris.Get("/properties", propertyIndex)
 	iris.Post("/property", propertyCreate)
@@ -51,6 +51,7 @@ func main() {
 }
 
 func Search(c *iris.Context) {
+	_ = "breakpoint"
 	u := User{Name: "Madeline", Age: 16}
 	c.JSON(iris.StatusOK, u)
 }

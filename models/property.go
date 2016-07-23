@@ -7,10 +7,14 @@ type Property struct {
 }
 
 func AllProperties() []Property {
-	p := Property{}
+	var p Property
 	properties := make([]Property, 0)
 
-	rows, _ := db.Query("SELECT address, latitude, longitude FROM properties")
+	rows, err := db.Query("SELECT address, latitude, longitude FROM properties")
+	if err != nil {
+		panic(err)
+	}
+
 	defer rows.Close()
 
 	for rows.Next() {

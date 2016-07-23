@@ -10,4 +10,11 @@ newApp.controller('newAppController', function newAppController($scope, $http) {
   $http.get("/properties").success(function(data) {
     $scope.locations = data;
   });
+
+  $scope.searchNearby = function($event){
+    var keyCode = $event.which || $event.keyCode;
+    if (keyCode === 13) {
+      alert("Hey guys!");
+    }
+  };
 });

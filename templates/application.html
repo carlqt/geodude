@@ -7,27 +7,28 @@
   <body>
     <div class="container" ng-cloak>
       <h1>Hi {{.Name}}</h1>
-      <% 5 + 5 %>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-          </tr>
-        </thead>
-        <tbody ng-controller="newAppController">
-          <tr ng-repeat="location in locations">
-            <td > <% location.address %> </td>
-            <td > <% location.lng %> </td>
-            <td > <% location.lat %> </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="location-wrapper" ng-controller="newAppController">
+        <input type="text" class="form-control" ng-keypress="searchNearby($event)" placeholder="Search here...">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="location in locations">
+              <td > <% location.address %> </td>
+              <td > <% location.lng %> </td>
+              <td > <% location.lat %> </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
