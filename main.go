@@ -84,12 +84,20 @@ func apiCreate(c *gin.Context) {
 }
 
 func apiGeocode(c *gin.Context) {
-	lat, lng := g.Geocode(c.Query("location"))
+	point, err := g.Geocode(c.Query("location"))
+	_ = "breakpoint"
 
-	c.JSON(http.StatusOK, gin.H{
-			"lng": lng,
-			"lat": lat,
-		})
+	if err != nil {
+		color.Red(err.Error())
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+			})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+				"lng": point["lng"],
+				"lat": point["lat"],
+			})
+	}
 }
 
 func pong(c *gin.Context) {
