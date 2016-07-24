@@ -5,8 +5,10 @@ import (
 	"github.com/carlqt/geodude/geocode"
 	// "github.com/iris-contrib/template/html"
 	"github.com/carlqt/geodude/models"
-	"github.com/iris-contrib/middleware/logger"
-	"github.com/kataras/iris"
+	// "github.com/iris-contrib/middleware/logger"
+	// "github.com/kataras/iris"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func checkErr(err error) {
@@ -32,66 +34,53 @@ func init() {
 }
 
 func main() {
-	// apiKey := os.Getenv("GOOGLE_SERVER_KEY")
-	// url := "https://maps.googleapis.com/maps/api/geocode/json"
+	router := gin.Default()
 
-	// g := geocode.GoogleGeoCode{URL: url, ApiKey: apiKey}
-	// lng, lat := g.Geocode("xxlkajflkasdjfx")
+	router.Static("/assets", "./assets")
+  router.LoadHTMLGlob("templates/*")
 
-	// fmt.Printf("Latitude is %f and Longitude is %f", lat, lng)
+	router.GET("/ping", pong)
+	router.GET("/search", Search)
+	router.GET("/", Index)
+	router.GET("/properties", propertyIndex)
+	router.POST("/property", propertyCreate)
+	router.GET("/convert", convert)
 
-	// TODO endpoints: Add properties, Edit?, Search within radius
-	iris.StaticServe("./assets")
-	iris.Use(logger.New(iris.Logger))
-	iris.Get("/ping", pong)
-	iris.Get("/search", Search)
-	iris.Get("/", Index)
-	iris.Get("/properties", propertyIndex)
-	iris.Post("/property", propertyCreate)
-	iris.Get("/convert", convert)
-
-	errorLogger := logger.New(iris.Logger)
-
-	iris.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
-		errorLogger.Serve(ctx)
-		ctx.Write("404 bad page ")
-	})
-
-	iris.Listen(":8000")
+	router.Run(":8000")
 }
 
-func Search(c *iris.Context) {
-	point, err := g.Geocode(c.URLParam("location"))
+func Search(c *gin.Context) {
+	point, err := g.Geocode(c.Query("location"))
 	if err != nil {
-		c.EmitError(iris.StatusInternalServerError)
+		// c.EmitError(iris.StatusInternalServerError)
 	} else {
 		p := models.NearbyProperty(point["lat"], point["lng"])	
-		c.JSON(iris.StatusOK, p)
+		c.JSON(http.StatusOK, p)
 	}
 }
 
-func Index(c *iris.Context) {
+func Index(c *gin.Context) {
 	u := User{Name: "Iris", Age: 30}
-	c.MustRender("application.html", u)
+	c.HTML(http.StatusOK, "application.html", u)
 }
 
-func propertyIndex(c *iris.Context) {
+func propertyIndex(c *gin.Context) {
 	p := models.AllProperties()
-	c.JSON(iris.StatusOK, p)
+	c.JSON(http.StatusOK, p)
 }
 
-func propertyCreate(c *iris.Context) {
+func propertyCreate(c *gin.Context) {
 }
 
-func convert(c *iris.Context) {
-	lat, lng := g.Geocode(c.URLParam("location"))
+func convert(c *gin.Context) {
+	lat, lng := g.Geocode(c.Query("location"))
 
-	c.JSON(iris.StatusOK, iris.Map{
+	c.JSON(http.StatusOK, gin.H{
 			"lng": lng,
 			"lat": lat,
 		})
 }
 
-func pong(c *iris.Context) {
-	c.Write("pong")
+func pong(c *gin.Context) {
+	c.String(http.StatusOK, "pong")
 }
