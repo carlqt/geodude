@@ -33,10 +33,15 @@ func init() {
 func main() {
 	router := gin.Default()
 
+	// router := gin.New() // Sets gin without default middleware
+  // router.Use(gin.Logger())	// Global middleware to add Logger
+  // router.Use(beforePong()) // Global middleware to add custom middleware
+
+
 	router.Static("/assets", "./assets")
   router.LoadHTMLGlob("templates/*")
 
-	router.GET("/ping", pong)
+	router.GET("/ping", beforePong(), pong)
 	router.GET("/", Index)
 
 	api := router.Group("/api")
@@ -85,4 +90,12 @@ func apiGeocode(c *gin.Context) {
 
 func pong(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
+}
+
+// example of custom middleware
+func beforePong() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(200, "Before Pong ")
+		c.Next()
+	}
 }
