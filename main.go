@@ -70,7 +70,7 @@ func apiSearch(c *gin.Context) {
 			"error": err.Error(),
 			})
 	} else {
-		p := models.NearbyProperty(point["lat"], point["lng"])	
+		p := models.NearbyProperty(point.Geometry.Location["lat"], point.Geometry.Location["lng"])	
 		c.JSON(http.StatusOK, p)
 	}
 }
@@ -81,11 +81,41 @@ func apiIndex(c *gin.Context) {
 }
 
 func apiCreate(c *gin.Context) {
+	var err error
+
+	property := &models.Property{Address: c.PostForm("location")}
+	property, err = property.GeocodeAndCreate(g)
+
+	if err != nil {
+		color.Red(err.Error())
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+			})
+	} else {
+		c.JSON(http.StatusOK, property)
+	}
+
+	// if err != nil {
+	// 	color.Red(err.Error())
+	// 	c.JSON(500, gin.H{
+	// 		"error": err.Error(),
+	// 		})
+	// } else {
+	// 	property := &models.Property{
+	// 		Address: result.FormattedAddress,
+	// 		Lng: result.Geometry.Location["lng"],
+	// 		Lat: result.Geometry.Location["lat"],
+	// 	}
+
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 			"lng": point.Geometry.Location["lng"],
+	// 			"lat": point.Geometry.Location["lat"],
+	// 		})
+	// }
 }
 
 func apiGeocode(c *gin.Context) {
-	point, err := g.Geocode(c.Query("location"))
-	_ = "breakpoint"
+	result, err := g.Geocode(c.Query("location"))
 
 	if err != nil {
 		color.Red(err.Error())
@@ -94,8 +124,8 @@ func apiGeocode(c *gin.Context) {
 			})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-				"lng": point["lng"],
-				"lat": point["lat"],
+				"lng": result.Geometry.Location["lng"],
+				"lat": result.Geometry.Location["lat"],
 			})
 	}
 }

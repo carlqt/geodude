@@ -14,7 +14,6 @@ newApp.controller('newAppController', function newAppController($scope, $http) {
   $scope.searchNearby = function($event){
     var keyCode = $event.which || $event.keyCode;
     if (keyCode === 13) {
-      alert("Hey guys!");
     }
   };
 });

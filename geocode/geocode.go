@@ -34,7 +34,7 @@ type GeometryBody struct {
 
 // Send an HTTP request to https://maps.googleapis.com/maps/api/geocode/json
 // Returns an error if can't connect
-func (g *GoogleGeoCode) request(address string) (geometry map[string]float32, err error) {
+func (g *GoogleGeoCode) request(address string) (geometry *ResultBody, err error) {
 	req, err := http.NewRequest("GET", g.URL, nil)
 	if err != nil {
 		return nil, err
@@ -59,15 +59,15 @@ func (g *GoogleGeoCode) request(address string) (geometry map[string]float32, er
 	dec.Decode(&jsn)
 
 	if jsn.Status == "OK" {
-		geometry = jsn.Results[0].Geometry.Location
+		geometry = &jsn.Results[0]
 		return geometry, nil
 	} else {
 		return nil, fmt.Errorf("Status: %s\nError Message: %s", jsn.Status, jsn.ErrorMessage)
 	}
 }
 
-func (g *GoogleGeoCode) Geocode(address string) (points map[string]float32, err error) {
-	points, err = g.request(address)
+func (g *GoogleGeoCode) Geocode(address string) (result *ResultBody, err error) {
+	result, err = g.request(address)
 
-	return points, err
+	return result, err
 }

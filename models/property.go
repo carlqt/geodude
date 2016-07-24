@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/carlqt/geodude/geocode"
+)
+
 type Property struct {
 	Address string  `json:"address"`
 	Lng     float32 `json:"lng"`
@@ -30,6 +34,23 @@ func (p *Property) Create() error{
     p.Address, p.Lat, p.Lng)
 
   return err
+}
+
+func (p *Property) GeocodeAndCreate(gcode geocode.GoogleGeoCode) (*Property, error){
+	results, err := gcode.Geocode(p.Address)
+
+	if err != nil {
+		return nil, err
+	}
+
+	p.Lat = results.Geometry.Location["lat"]
+	p.Lng = results.Geometry.Location["lng"]
+	p.Address = results.FormattedAddress
+
+  _, err = db.Exec("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3)",
+    p.Address, p.Lat, p.Lng)
+
+  return p, err
 }
 
 func NearbyProperty(lat float32, lng float32) []Property{
