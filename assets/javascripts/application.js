@@ -7,7 +7,7 @@ newApp.config(function($interpolateProvider){
 });
 
 newApp.controller('newAppController', function newAppController($scope, $http) {
-  $http.get("/properties").success(function(data) {
+  $http.get("/api/properties").success(function(data) {
     $scope.locations = data;
   });
 

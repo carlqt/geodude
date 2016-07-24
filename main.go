@@ -3,10 +3,7 @@ package main
 import (
 	"os"
 	"github.com/carlqt/geodude/geocode"
-	// "github.com/iris-contrib/template/html"
 	"github.com/carlqt/geodude/models"
-	// "github.com/iris-contrib/middleware/logger"
-	// "github.com/kataras/iris"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -19,7 +16,7 @@ func checkErr(err error) {
 
 type User struct {
 	Name string
-	Age  int
+	Title string
 }
 
 func init() {
@@ -40,16 +37,26 @@ func main() {
   router.LoadHTMLGlob("templates/*")
 
 	router.GET("/ping", pong)
-	router.GET("/search", Search)
 	router.GET("/", Index)
-	router.GET("/properties", propertyIndex)
-	router.POST("/property", propertyCreate)
-	router.GET("/convert", convert)
+
+	api := router.Group("/api")
+	{
+		api.GET("/search", apiSearch)
+		api.GET("/properties", apiIndex)
+		api.POST("/property", apiCreate)
+		api.GET("/geocode", apiGeocode)
+	}
 
 	router.Run(":8000")
 }
 
-func Search(c *gin.Context) {
+func Index(c *gin.Context) {
+	u := User{Name: "Iris", Title: "Demo"}
+	c.HTML(http.StatusOK, "application.html", u)
+}
+
+
+func apiSearch(c *gin.Context) {
 	point, err := g.Geocode(c.Query("location"))
 	if err != nil {
 		// c.EmitError(iris.StatusInternalServerError)
@@ -59,20 +66,15 @@ func Search(c *gin.Context) {
 	}
 }
 
-func Index(c *gin.Context) {
-	u := User{Name: "Iris", Age: 30}
-	c.HTML(http.StatusOK, "application.html", u)
-}
-
-func propertyIndex(c *gin.Context) {
+func apiIndex(c *gin.Context) {
 	p := models.AllProperties()
 	c.JSON(http.StatusOK, p)
 }
 
-func propertyCreate(c *gin.Context) {
+func apiCreate(c *gin.Context) {
 }
 
-func convert(c *gin.Context) {
+func apiGeocode(c *gin.Context) {
 	lat, lng := g.Geocode(c.Query("location"))
 
 	c.JSON(http.StatusOK, gin.H{
