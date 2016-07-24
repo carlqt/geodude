@@ -5,6 +5,7 @@ import (
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
 	"github.com/gin-gonic/gin"
+	"github.com/fatih/color"
 	"net/http"
 )
 
@@ -64,7 +65,10 @@ func Index(c *gin.Context) {
 func apiSearch(c *gin.Context) {
 	point, err := g.Geocode(c.Query("location"))
 	if err != nil {
-		// c.EmitError(iris.StatusInternalServerError)
+		color.Red(err.Error())
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+			})
 	} else {
 		p := models.NearbyProperty(point["lat"], point["lng"])	
 		c.JSON(http.StatusOK, p)
