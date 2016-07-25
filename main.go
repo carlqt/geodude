@@ -86,13 +86,14 @@ func apiCreate(c *gin.Context) {
 	property := &models.Property{Address: c.PostForm("location")}
 	property, err = property.GeocodeAndCreate(g)
 
+	_ = "breakpoint"
 	if err != nil {
 		color.Red(err.Error())
 		c.JSON(500, gin.H{
 			"error": err.Error(),
 			})
 	} else {
-		c.JSON(http.StatusOK, property)
+		c.JSON(http.StatusCreated, property)
 	}
 
 	// if err != nil {
