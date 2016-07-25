@@ -6,8 +6,8 @@ newApp.config(function($interpolateProvider){
   $interpolateProvider.endSymbol('%>');
 });
 
-newApp.controller('newAppController', function newAppController($scope, $http) {
-  $scope.locations = {}
+newApp.controller('newAppController', function newAppController($scope, $http, $timeout) {
+  $scope.locations = []
 
   $http.get("/api/properties").success(function(data) {
     $scope.locations = data;
@@ -23,12 +23,15 @@ newApp.controller('newAppController', function newAppController($scope, $http) {
         }
       }
 
-      $http.post('/api/property', "location=" + $event.currentTarget.value, config)
-      .success(function(data, status, header){
-        debugger;
+      $http.post('/api/property', "location=" + $event.currentTarget.value, config).success(function(data, status, header){
+        $timeout(function(){
+          $scope.$apply(function(){
+            $scope.locations.push(data);
+          });
+        });
+
         console.log("created");
-      })
-      .error(function(data, status, header){
+      }).error(function(data, status, header){
         console.log("Failed");
       })
     }
