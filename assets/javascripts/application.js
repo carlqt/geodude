@@ -1,3 +1,4 @@
+// Able to delete newly created records
 
 var newApp = angular.module('newApp', []);
 
@@ -6,8 +7,14 @@ newApp.config(function($interpolateProvider){
   $interpolateProvider.endSymbol('%>');
 });
 
-newApp.controller('newAppController', function newAppController($scope, $http, $timeout) {
+newApp.controller('newAppController', function newAppController($scope, $http) {
   $scope.locations = []
+  var config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+    }
+  }
+
 
   $http.get("/api/properties").success(function(data) {
     $scope.locations = data;
@@ -17,12 +24,6 @@ newApp.controller('newAppController', function newAppController($scope, $http, $
     var keyCode = $event.which || $event.keyCode;
     if (keyCode === 13) {
 
-      var config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-        }
-      }
-
       $http.post('/api/property', "location=" + $event.currentTarget.value, config).success(function(data, status, header){
         $scope.locations.push(data)
         console.log("created");
@@ -30,5 +31,13 @@ newApp.controller('newAppController', function newAppController($scope, $http, $
         console.log("Failed");
       })
     }
+  };
+
+  $scope.delete = function(id) {
+    $http.delete('/api/property/' + id, config).success(function(data, status, header){
+      console.log(data);
+      removedItemIndex = $scope.locations.findIndex(x=> x.id === id);
+      $scope.locations.splice(removedItemIndex, 1);
+    });
   };
 });

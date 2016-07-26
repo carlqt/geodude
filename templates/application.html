@@ -24,7 +24,7 @@
               <td> <% location.address %> </td>
               <td> <% location.lat %> </td>
               <td> <% location.lng %> </td>
-              <td><a href='' data-id="<% location.id %>">Delete</a></td>
+              <td><a href='' ng-click="delete(location.id)">Delete</a></td>
             </tr>
           </tbody>
         </table>
