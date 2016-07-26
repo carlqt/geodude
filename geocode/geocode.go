@@ -18,9 +18,9 @@ type GoogleGeoCode struct {
 }
 
 type JsonResponse struct {
-	Status  string       `json:"status"`
-	Results []ResultBody `json:"results"`
-	ErrorMessage string `json:"error_message"`
+	Status       string       `json:"status"`
+	Results      []ResultBody `json:"results"`
+	ErrorMessage string       `json:"error_message"`
 }
 
 type ResultBody struct {
@@ -43,6 +43,8 @@ func (g *GoogleGeoCode) request(address string) (geometry *ResultBody, err error
 	q := req.URL.Query()
 	q.Add("key", g.ApiKey)
 	q.Add("address", address)
+	q.Add("components", "country:SG")
+
 	req.URL.RawQuery = q.Encode()
 
 	client := &http.Client{}
