@@ -48,8 +48,8 @@ func (p *Property) GeocodeAndCreate(gcode geocode.GoogleGeoCode) (*Property, err
 	p.Lng = results.Geometry.Location["lng"]
 	p.Address = results.FormattedAddress
 
-	_, err = db.Exec("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3)",
-		p.Address, p.Lat, p.Lng)
+	err = db.QueryRow("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3) RETURNING id",
+		p.Address, p.Lat, p.Lng).Scan(&p.ID)
 
 	return p, err
 }
