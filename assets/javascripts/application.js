@@ -24,12 +24,7 @@ newApp.controller('newAppController', function newAppController($scope, $http, $
       }
 
       $http.post('/api/property', "location=" + $event.currentTarget.value, config).success(function(data, status, header){
-        $timeout(function(){
-          $scope.$apply(function(){
-            $scope.locations.push(data);
-          });
-        });
-
+        $scope.locations.push(data)
         console.log("created");
       }).error(function(data, status, header){
         console.log("Failed");
