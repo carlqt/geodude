@@ -16,13 +16,15 @@
               <th>Address</th>
               <th>Latitude</th>
               <th>Longitude</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="location in locations">
-              <td > <% location.address %> </td>
-              <td > <% location.lat %> </td>
-              <td > <% location.lng %> </td>
+              <td> <% location.address %> </td>
+              <td> <% location.lat %> </td>
+              <td> <% location.lng %> </td>
+              <td><a href='' data-id="<% location.id %>">Delete</a></td>
             </tr>
           </tbody>
         </table>

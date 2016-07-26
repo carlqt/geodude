@@ -1,12 +1,13 @@
 package main
 
 import (
-	"os"
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
-	"github.com/gin-gonic/gin"
 	"github.com/fatih/color"
+	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 func checkErr(err error) {
@@ -16,7 +17,7 @@ func checkErr(err error) {
 }
 
 type User struct {
-	Name string
+	Name  string
 	Title string
 }
 
@@ -35,12 +36,11 @@ func main() {
 	router := gin.Default()
 
 	// router := gin.New() // Sets gin without default middleware
-  // router.Use(gin.Logger())	// Global middleware to add Logger
-  // router.Use(beforePong()) // Global middleware to add custom middleware
-
+	// router.Use(gin.Logger())	// Global middleware to add Logger
+	// router.Use(beforePong()) // Global middleware to add custom middleware
 
 	router.Static("/assets", "./assets")
-  router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/ping", beforePong(), pong)
 	router.GET("/", Index)
@@ -51,6 +51,7 @@ func main() {
 		api.GET("/properties", apiIndex)
 		api.POST("/property", apiCreate)
 		api.GET("/geocode", apiGeocode)
+		api.DELETE("/property/:id", paramToInt(), apiDelete)
 	}
 
 	router.Run(":8000")
@@ -61,16 +62,15 @@ func Index(c *gin.Context) {
 	c.HTML(http.StatusOK, "application.html", u)
 }
 
-
 func apiSearch(c *gin.Context) {
 	point, err := g.Geocode(c.Query("location"))
 	if err != nil {
 		color.Red(err.Error())
 		c.JSON(400, gin.H{
 			"error": err.Error(),
-			})
+		})
 	} else {
-		p := models.NearbyProperty(point.Geometry.Location["lat"], point.Geometry.Location["lng"])	
+		p := models.NearbyProperty(point.Geometry.Location["lat"], point.Geometry.Location["lng"])
 		c.JSON(http.StatusOK, p)
 	}
 }
@@ -91,7 +91,7 @@ func apiCreate(c *gin.Context) {
 		color.Red(err.Error())
 		c.JSON(500, gin.H{
 			"error": err.Error(),
-			})
+		})
 	} else {
 		c.JSON(http.StatusCreated, property)
 	}
@@ -122,12 +122,27 @@ func apiGeocode(c *gin.Context) {
 		color.Red(err.Error())
 		c.JSON(500, gin.H{
 			"error": err.Error(),
-			})
+		})
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-				"lng": result.Geometry.Location["lng"],
-				"lat": result.Geometry.Location["lat"],
-			})
+			"lng": result.Geometry.Location["lng"],
+			"lat": result.Geometry.Location["lat"],
+		})
+	}
+}
+
+func apiDelete(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	err := models.PropertyDelete(id)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		c.JSON(200, gin.H{
+			"status": "deleted",
+		})
 	}
 }
 
@@ -139,6 +154,22 @@ func pong(c *gin.Context) {
 func beforePong() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.String(200, "Before Pong ")
-		c.Next()
+		c.Abort()
+		//c.Next()
+	}
+}
+
+func paramToInt() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		_, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			c.JSON(400, gin.H{
+				"error": "bad parameter value",
+			})
+			c.Abort()
+		} else {
+			c.Next()
+		}
 	}
 }
