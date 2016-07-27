@@ -9,7 +9,7 @@
       <h1>Hi {{.Name}}</h1>
 
       <div class="location-wrapper" ng-controller="newAppController">
-        <input type="text" ng-model="createField" class="form-control" ng-keypress="addAddress($event)" placeholder="Add place here...">
+        <input id="address" type="text" ng-model="createField" class="form-control" ng-keypress="addAddress($event)" placeholder="Add place here...">
         <table class="table">
           <thead>
             <tr>
@@ -34,6 +34,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHnDL8CFN4Z7_FmoEQ7fHwrR-1dAsNH68&libraries=places"></script>
     <script src="assets/javascripts/application.js"></script>
+    <script src="assets/javascripts/google-autocomplete.js"></script>
   </body>
 </html>
