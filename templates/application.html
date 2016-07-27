@@ -9,7 +9,7 @@
       <h1>Hi {{.Name}}</h1>
 
       <div class="location-wrapper" ng-controller="newAppController">
-        <input type="text" class="form-control" ng-keypress="searchNearby($event)" placeholder="Search here...">
+        <input type="text" ng-model="createField" class="form-control" ng-keypress="addAddress($event)" placeholder="Search here...">
         <table class="table">
           <thead>
             <tr>
