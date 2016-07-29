@@ -1,10 +1,15 @@
 // Able to delete newly created records
 
-var newApp = angular.module('newApp', []);
+var newApp = angular.module('newApp', ['ngRoute']);
 
-newApp.config(function($interpolateProvider){
+newApp.config(function($interpolateProvider, $routeProvider){
   $interpolateProvider.startSymbol('<%');
   $interpolateProvider.endSymbol('%>');
+
+  $routeProvider.when('/agent', {
+    templateUrl: 'templates/agent.html',
+    controller: 'newAppController'
+  });
 });
 
 newApp.controller('newAppController', function newAppController($scope, $http) {
