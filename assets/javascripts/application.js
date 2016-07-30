@@ -11,7 +11,7 @@ newApp.config(function($interpolateProvider, $routeProvider){
     controller: 'newAppController'
   }).when('/agent', {
     templateUrl: '/assets/templates/agent.html',
-    controller: 'newAppController'
+    controller: 'agentController'
   });
 });
 
