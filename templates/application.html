@@ -8,30 +8,8 @@
     {{ template "navbar.html" }}
 
     <div class="container" ng-cloak>
-      <h1>Hi {{.Name}}</h1>
-
-      <div class="location-wrapper" ng-controller="newAppController">
+      <div class="location-wrapper">
         <div ng-view></div>
-
-        <input id="address" type="text" ng-model="createField" class="form-control" ng-keypress="addAddress($event)" placeholder="Add place here...">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Address</th>
-              <th>Latitude</th>
-              <th>Longitude</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="location in locations">
-              <td> <% location.address %> </td>
-              <td> <% location.lat %> </td>
-              <td> <% location.lng %> </td>
-              <td><a href='' ng-click="delete(location.id)">Delete</a></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
     </div>

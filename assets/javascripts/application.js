@@ -6,8 +6,11 @@ newApp.config(function($interpolateProvider, $routeProvider){
   $interpolateProvider.startSymbol('<%');
   $interpolateProvider.endSymbol('%>');
 
-  $routeProvider.when('/agent', {
-    templateUrl: 'templates/agent.html',
+  $routeProvider.when('/', {
+    templateUrl: '/assets/templates/propertiesTable.html',
+    controller: 'newAppController'
+  }).when('/agent', {
+    templateUrl: '/assets/templates/agent.html',
     controller: 'newAppController'
   });
 });
