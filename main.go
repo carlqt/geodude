@@ -166,5 +166,5 @@ func paramToInt() gin.HandlerFunc {
 func strToInt(str string) int64 {
 	str = strings.Replace(str, ".", "", -1)
 	i, _ := strconv.ParseInt(str, 10, 64)
-	return i
+	return i * 1000
 }
