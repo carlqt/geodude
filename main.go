@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func checkErr(err error) {
@@ -83,7 +84,13 @@ func apiIndex(c *gin.Context) {
 func apiCreate(c *gin.Context) {
 	var err error
 
-	property := &models.Property{Address: c.PostForm("location")}
+	property := &models.Property{Address: c.PostForm("address"),
+		Price: strToInt(c.PostForm("price")),
+		Description: c.PostForm("description"),
+		Type: c.PostForm("type"),
+		Name: c.PostForm("name"),
+	}
+
 	property, err = property.GeocodeAndCreate(g)
 
 	_ = "breakpoint"
@@ -95,24 +102,6 @@ func apiCreate(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusCreated, property)
 	}
-
-	// if err != nil {
-	// 	color.Red(err.Error())
-	// 	c.JSON(500, gin.H{
-	// 		"error": err.Error(),
-	// 		})
-	// } else {
-	// 	property := &models.Property{
-	// 		Address: result.FormattedAddress,
-	// 		Lng: result.Geometry.Location["lng"],
-	// 		Lat: result.Geometry.Location["lat"],
-	// 	}
-
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 			"lng": point.Geometry.Location["lng"],
-	// 			"lat": point.Geometry.Location["lat"],
-	// 		})
-	// }
 }
 
 func apiGeocode(c *gin.Context) {
@@ -172,4 +161,10 @@ func paramToInt() gin.HandlerFunc {
 			c.Next()
 		}
 	}
+}
+
+func strToInt(str string) int64 {
+	str = strings.Replace(str, ".", "", -1)
+	i, _ := strconv.ParseInt(str, 10, 64)
+	return i
 }

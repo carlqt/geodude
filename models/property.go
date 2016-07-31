@@ -6,7 +6,11 @@ import (
 
 type Property struct {
 	ID      int     `json:"id"`
+	Name    string 	`json:"name"`
 	Address string  `json:"address"`
+	Price		int64		`json:"price"`
+	Description string `json:"description"`
+	Type    string	`json:"type"`
 	Lng     float32 `json:"lng"`
 	Lat     float32 `json:"lat"`
 }
@@ -31,8 +35,8 @@ func AllProperties() []Property {
 }
 
 func (p *Property) Create() error {
-	_, err := db.Exec("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3)",
-		p.Address, p.Lat, p.Lng)
+	err := db.QueryRow("INSERT INTO properties(address, latitude, longitude, type, description, price, name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		p.Address, p.Lat, p.Lng, p.Type, p.Description, p.Price, p.Name).Scan(&p.ID)
 
 	return err
 }
@@ -48,8 +52,9 @@ func (p *Property) GeocodeAndCreate(gcode geocode.GoogleGeoCode) (*Property, err
 	p.Lng = results.Geometry.Location["lng"]
 	p.Address = results.FormattedAddress
 
-	err = db.QueryRow("INSERT INTO properties(address, latitude, longitude) VALUES($1, $2, $3) RETURNING id",
-		p.Address, p.Lat, p.Lng).Scan(&p.ID)
+	// err = db.QueryRow("INSERT INTO properties(address, latitude, longitude, type, description, price, name) VALUES($1, $2, $3) RETURNING id",
+	// 	p.Address, p.Lat, p.Lng).Scan(&p.ID)
+	err = p.Create()
 
 	return p, err
 }
