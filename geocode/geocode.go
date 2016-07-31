@@ -12,11 +12,6 @@ func checkErr(err error) {
 	}
 }
 
-type GoogleGeoCode struct {
-	URL    string
-	ApiKey string
-}
-
 type JsonResponse struct {
 	Status       string       `json:"status"`
 	Results      []ResultBody `json:"results"`
@@ -34,14 +29,14 @@ type GeometryBody struct {
 
 // Send an HTTP request to https://maps.googleapis.com/maps/api/geocode/json
 // Returns an error if can't connect
-func (g *GoogleGeoCode) request(address string) (geometry *ResultBody, err error) {
-	req, err := http.NewRequest("GET", g.URL, nil)
+func request(address string) (geometry *ResultBody, err error) {
+	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	q := req.URL.Query()
-	q.Add("key", g.ApiKey)
+	q.Add("key", KEY)
 	q.Add("address", address)
 	q.Add("components", "country:SG")
 
@@ -68,8 +63,8 @@ func (g *GoogleGeoCode) request(address string) (geometry *ResultBody, err error
 	}
 }
 
-func (g *GoogleGeoCode) Geocode(address string) (result *ResultBody, err error) {
-	result, err = g.request(address)
+func Geocode(address string) (result *ResultBody, err error) {
+	result, err = request(address)
 
 	return result, err
 }

@@ -42,8 +42,8 @@ func (p *Property) Create() error {
 	return err
 }
 
-func (p *Property) GeocodeAndCreate(gcode geocode.GoogleGeoCode) (*Property, error) {
-	results, err := gcode.Geocode(p.Address)
+func (p *Property) GeocodeAndCreate() (*Property, error) {
+	results, err := geocode.Geocode(p.Address)
 
 	if err != nil {
 		return nil, err

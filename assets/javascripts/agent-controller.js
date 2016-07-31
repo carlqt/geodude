@@ -6,7 +6,6 @@ newApp.controller('agentController', function newAppController($scope, $http, $h
   $scope.propertyCreate = function() {
     var property = $httpParamSerializer($scope.property)
     property.address = $('#address').val();
-    debugger;
 
     $http.post('/api/property', property, config).success(function(data, status, header){
       $scope.property = {}
