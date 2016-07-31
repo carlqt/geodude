@@ -2,13 +2,14 @@ package models
 
 import (
 	"github.com/carlqt/geodude/geocode"
+	"github.com/shopspring/decimal"
 )
 
 type Property struct {
 	ID      int     `json:"id"`
 	Name    string 	`json:"name"`
 	Address string  `json:"address"`
-	Price		int64		`json:"price"`
+	Price		decimal.Decimal		`json:"price"`
 	Description string `json:"description"`
 	Type    string	`json:"type"`
 	Lng     float32 `json:"lng"`
@@ -36,7 +37,7 @@ func AllProperties() []Property {
 
 func (p *Property) Create() error {
 	err := db.QueryRow("INSERT INTO properties(address, latitude, longitude, type, description, price, name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-		p.Address, p.Lat, p.Lng, p.Type, p.Description, p.Price, p.Name).Scan(&p.ID)
+		p.Address, p.Lat, p.Lng, p.Type, p.Description, p.Price.String(), p.Name).Scan(&p.ID)
 
 	return err
 }

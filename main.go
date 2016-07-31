@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
+	"github.com/shopspring/decimal"
 	"strconv"
-	"strings"
 )
 
 func checkErr(err error) {
@@ -85,7 +85,7 @@ func apiCreate(c *gin.Context) {
 	var err error
 
 	property := &models.Property{Address: c.PostForm("address"),
-		Price: strToInt(c.PostForm("price")),
+		Price: strToCurrency(c.PostForm("price")),
 		Description: c.PostForm("description"),
 		Type: c.PostForm("type"),
 		Name: c.PostForm("name"),
@@ -163,8 +163,7 @@ func paramToInt() gin.HandlerFunc {
 	}
 }
 
-func strToInt(str string) int64 {
-	str = strings.Replace(str, ".", "", -1)
-	i, _ := strconv.ParseInt(str, 10, 64)
-	return i * 1000
+func strToCurrency(str string) decimal.Decimal {
+	price, _ := decimal.NewFromString(str)
+	return price
 }
