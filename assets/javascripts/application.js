@@ -2,6 +2,19 @@
 
 var newApp = angular.module('newApp', ['ngRoute']);
 
+// 2 ways to create a service
+newApp.service('demoService', function() {
+  this.users = ['John', 'James', 'Jake']
+});
+
+newApp.factory('demoFactory', function() {
+  var fac = {};
+  fac.users = ['John', "James", "Jake"]
+  return fac;
+});
+
+//--------------------------
+
 newApp.config(function($interpolateProvider, $routeProvider){
   $interpolateProvider.startSymbol('<%');
   $interpolateProvider.endSymbol('%>');
@@ -15,7 +28,9 @@ newApp.config(function($interpolateProvider, $routeProvider){
   });
 });
 
-newApp.controller('newAppController', function newAppController($scope, $http) {
+newApp.controller('newAppController', function newAppController($scope, $http, demoService) {
+  console.log(demoService.users); // Example on how to use a service in your controller
+
   $scope.locations = []
   var config = {
     headers: {
