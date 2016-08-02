@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
+	"github.com/carlqt/geodude/controllers"
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
-	"github.com/carlqt/geodude/controllers"
-	// "github.com/fatih/color"
+	"github.com/dgrijalva/jwt-go"
+	_ "github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func checkErr(err error) {
@@ -39,11 +42,13 @@ func main() {
 	router.GET("/ping", beforePong(), pong)
 	router.GET("/newping", controllers.Pong)
 	router.GET("/", Index)
+	router.GET("/token/display", displayToken)
+	router.POST("/token/create", createToken)
 
 	api := router.Group("/api")
 	{
 		api.GET("/search", controllers.PropertySearch)
-		api.GET("/properties", controllers.PropertyIndex)
+		api.GET("/properties", jwtAuthenticate(), controllers.PropertyIndex)
 		api.POST("/property", controllers.PropertyCreate)
 		api.GET("/geocode", controllers.PropertyGeocode)
 		api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
@@ -63,6 +68,7 @@ func pong(c *gin.Context) {
 
 // example of custom middleware
 func beforePong() gin.HandlerFunc {
+	// can add initializers here
 	return func(c *gin.Context) {
 		c.String(200, "Before Pong ")
 		c.Abort()
@@ -82,5 +88,44 @@ func paramToInt() gin.HandlerFunc {
 		} else {
 			c.Next()
 		}
+	}
+}
+
+func jwtAuthenticate() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println(c.Request.Header["Authorization"])
+	}
+}
+
+func createToken(c *gin.Context) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":   "1",
+		"iat":  time.Now().Local(),
+		"type": "agent",
+	})
+
+	tokenString, err := token.SignedString([]byte("glassdoor"))
+
+	if err != nil {
+		c.String(400, err.Error())
+	} else {
+		c.String(200, tokenString)
+	}
+}
+
+func displayToken(c *gin.Context) {
+	tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDE2LTA4LTAyVDE4OjAxOjU3LjM0MzE2NDI3KzA4OjAwIiwiaWQiOiIxIiwidHlwZSI6ImFnZW50In0.gRdkq1qNrN3-cyiQEGyUauYlsGlJSTmTKkLUq1K3M7g"
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Error")
+		}
+
+		return []byte("glassdoor"), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		c.JSON(200, claims)
+	} else {
+		c.String(400, err.Error())
 	}
 }
