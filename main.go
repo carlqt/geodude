@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"fmt"
 	"github.com/carlqt/geodude/controllers"
 	"github.com/carlqt/geodude/geocode"
@@ -48,7 +49,7 @@ func main() {
 	api := router.Group("/api")
 	{
 		api.GET("/search", controllers.PropertySearch)
-		api.GET("/properties", jwtAuthenticate(), controllers.PropertyIndex)
+		api.GET("/properties", jwtAuthenticater(), controllers.PropertyIndex)
 		api.POST("/property", controllers.PropertyCreate)
 		api.GET("/geocode", controllers.PropertyGeocode)
 		api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
@@ -91,12 +92,6 @@ func paramToInt() gin.HandlerFunc {
 	}
 }
 
-func jwtAuthenticate() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		fmt.Println(c.Request.Header["Authorization"])
-	}
-}
-
 func createToken(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   "1",
@@ -114,7 +109,9 @@ func createToken(c *gin.Context) {
 }
 
 func displayToken(c *gin.Context) {
-	tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDE2LTA4LTAyVDE4OjAxOjU3LjM0MzE2NDI3KzA4OjAwIiwiaWQiOiIxIiwidHlwZSI6ImFnZW50In0.gRdkq1qNrN3-cyiQEGyUauYlsGlJSTmTKkLUq1K3M7g"
+	authHeader := c.Request.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, " ")[1]
+	// tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDE2LTA4LTAyVDE4OjAxOjU3LjM0MzE2NDI3KzA4OjAwIiwiaWQiOiIxIiwidHlwZSI6ImFnZW50In0.gRdkq1qNrN3-cyiQEGyUauYlsGlJSTmTKkLUq1K3M7g"
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Error")
@@ -127,5 +124,47 @@ func displayToken(c *gin.Context) {
 		c.JSON(200, claims)
 	} else {
 		c.String(400, err.Error())
+	}
+}
+
+func jwtAuthenticater() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := validateToken(c.Request.Header)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"error": err.Error(),
+			})
+			c.Abort()
+		} else {
+			c.Next()
+		}
+	}
+}
+
+func validateToken(h http.Header) error{
+	authHeader := h.Get("Authorization")
+
+	if authHeader == "" {
+		return fmt.Errorf("Authorization header not found")
+	}	
+
+	headerString := strings.Split(authHeader, " ")
+
+	if headerString[0] != "Bearer" {
+		return fmt.Errorf("Invalid authorization type")
+	}
+
+	_, err := jwt.Parse(headerString[1], func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Invalid algorithm type")
+		}
+
+		return []byte("glassdoor"), nil
+	})
+
+	if err != nil {
+		return err
+	} else {
+		return nil
 	}
 }
