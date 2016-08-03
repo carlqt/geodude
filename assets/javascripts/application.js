@@ -36,6 +36,10 @@ newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider)
       $scope.dogs = ['Bernese', 'Corgi', 'Husky'];
       console.log($scope.dogs);
     }
+  }).state('loginRegister', {
+    url: '/login_register',
+    templateUrl: '/assets/templates/login_register_form.html',
+    controller: 'loginRegisterController'
   });
 });
 
