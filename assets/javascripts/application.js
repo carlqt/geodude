@@ -1,6 +1,6 @@
 // Able to delete newly created records
 
-var newApp = angular.module('newApp', ['ui.router', 'ngAutocomplete']);
+var newApp = angular.module('newApp', ['ui.router', 'ngAutocomplete', 'ngAnimate']);
 
 // 2 ways to create a service
 newApp.service('demoService', function() {
@@ -44,7 +44,7 @@ newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider)
 });
 
 newApp.controller('newAppController', function newAppController($scope, $http, demoService) {
-  console.log(demoService.users); // Example on how to use a service in your controller
+  // console.log(demoService.users); // Example on how to use a service in your controller
 
   $scope.locations = []
   var config = {
