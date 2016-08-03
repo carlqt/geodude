@@ -1,6 +1,6 @@
 // Able to delete newly created records
 
-var newApp = angular.module('newApp', ['ui.router']);
+var newApp = angular.module('newApp', ['ui.router', 'ngAutocomplete']);
 
 // 2 ways to create a service
 newApp.service('demoService', function() {
