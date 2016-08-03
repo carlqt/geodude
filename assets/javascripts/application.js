@@ -1,6 +1,6 @@
 // Able to delete newly created records
 
-var newApp = angular.module('newApp', ['ngRoute']);
+var newApp = angular.module('newApp', ['ui.router']);
 
 // 2 ways to create a service
 newApp.service('demoService', function() {
@@ -15,16 +15,27 @@ newApp.factory('demoFactory', function() {
 
 //--------------------------
 
-newApp.config(function($interpolateProvider, $routeProvider){
+newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider){
   $interpolateProvider.startSymbol('<%');
   $interpolateProvider.endSymbol('%>');
 
-  $routeProvider.when('/', {
+  $urlRouterProvider.otherwise('/');
+
+  $stateProvider.state('root', {
+    url: '/',
     templateUrl: '/assets/templates/propertiesTable.html',
     controller: 'newAppController'
-  }).when('/agent', {
+  }).state('agent', {
+    url: '/agent',
     templateUrl: '/assets/templates/agent.html',
     controller: 'agentController'
+  }).state('demo', {
+    url: 'demo',
+    template: 'I could use this demo',
+    controller: function($scope) {
+      $scope.dogs = ['Bernese', 'Corgi', 'Husky'];
+      console.log($scope.dogs);
+    }
   });
 });
 
