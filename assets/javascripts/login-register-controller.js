@@ -1,14 +1,3 @@
-newApp.directive('diva', function() {
-    var directive = {};
-
-    directive.restrict = 'A'; /* restrict this directive to elements */
-
-    directive.template = "My first directive: {{textToInsert}}";
-
-    return directive;
-});
-
-
 newApp.controller('loginRegisterController', function newAppController($scope, $http, $httpParamSerializer) {
   $scope.registerForm = false;
   $scope.loginForm = true;
