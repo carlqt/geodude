@@ -5,10 +5,10 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-xs-6">
-                <a href="" class="active" ng-click="showLogin()" id="login-form-link">Login</a>
+                <a href="" ng-class="{'active' : loginForm}" ng-click="showLogin()" id="login-form-link">Login</a>
               </div>
               <div class="col-xs-6">
-                <a href="" ng-click="showRegister()" id="register-form-link">Register</a>
+                <a href="" ng-class="{'active' : registerForm}" ng-click="showRegister()" id="register-form-link">Register</a>
               </div>
             </div>
             <hr>
