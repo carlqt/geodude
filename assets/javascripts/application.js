@@ -13,6 +13,11 @@ newApp.factory('demoFactory', function() {
   return fac;
 });
 
+newApp.service('formStates', function() {
+  this.loginForm = true;
+  this.registerForm = false;
+})
+
 //--------------------------
 
 newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider){
@@ -36,10 +41,14 @@ newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider)
       $scope.dogs = ['Bernese', 'Corgi', 'Husky'];
       console.log($scope.dogs);
     }
-  }).state('loginRegister', {
-    url: '/login_register',
-    templateUrl: '/assets/templates/login_register_form.html',
-    controller: 'loginRegisterController'
+  }).state('sessions', {
+    url: '/login',
+    templateUrl: '/assets/templates/sessions_form.html',
+    controller: 'sessionsController'
+  }).state('registration', {
+    url: '/sign_up',
+    templateUrl: '/assets/templates/registration_form.html',
+    controller: 'registrationsController'
   });
 });
 
