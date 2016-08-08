@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <label for="email" class="col-md-3 control-label">Email</label>
                         <div class="col-md-9">
-                            <input type="text" ng-model="user.email" class="form-control" name="email" placeholder="Email Address">
+                            <input type="text" ng-model="user.email" class="form-control" name="email" placeholder="Email Address" ng-minlength="3" ng-maxlength="8">
                         </div>
                     </div>
                     <div class="form-group">
@@ -44,11 +44,10 @@
                     <div class="form-group">
                         <label for="type" class="col-md-3 control-label">User type</label>
                         <div class="col-md-9">
-                          <select id="type" name="type" class="form-control" ng-model="user.type" ng-options="item for item in user.types">
+                          <select id="type" name="type" class="form-control" ng-model="user.type" ng-options="item for item in user.types"></select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <!-- Button -->
                         <div class="col-md-offset-3 col-md-9">
                             <button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
                         </div>
