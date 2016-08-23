@@ -6,39 +6,31 @@
                 <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" ui-sref="sessions">Sign In</a></div>
             </div>
             <div class="panel-body">
-                <form id="signupform" class="form-horizontal" role="form">
-                    <div id="signupalert" style="display:none" class="alert alert-danger">
-                        <p>Error:</p>
-                        <span></span>
-                    </div>
+                <form name="signupForm" ng-submit="createUser(signupForm.$valid)" class="form-horizontal" role="form" novalidate>
                     <div class="form-group">
                         <label for="email" class="col-md-3 control-label">Email</label>
                         <div class="col-md-9">
-                            <input type="text" ng-model="user.email" class="form-control" name="email" placeholder="Email Address" ng-minlength="3" ng-maxlength="8">
+                            <input type="email" ng-model="user.email" class="form-control" name="email" placeholder="Email Address" ng-minlength="4" required>
+                            <p ng-show="signupForm.email.$invalid && !signupForm.email.$pristine" class="help-block">Invalid email.</p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="firstname" class="col-md-3 control-label">Username</label>
                         <div class="col-md-9">
-                            <input type="text" class="form-control" name="username" ng-model="user.username" placeholder="Username">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname" class="col-md-3 control-label">First Name</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" ng-model="user.firstName" name="lastname" placeholder="First Name">
+                            <input type="text" class="form-control" name="username" ng-model="user.username" placeholder="Username" ng-minlength="4" required>
+                            <p ng-show="signupForm.username.$invalid && !signupForm.username.$pristine" class="help-block">Your name is required.</p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="password" class="col-md-3 control-label">Password</label>
                         <div class="col-md-9">
-                            <input type="password" class="form-control" name="passwd" ng-model="user.password" placeholder="Password">
+                            <input type="password" class="form-control" name="password" ng-model="user.password" placeholder="Password">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="password" class="col-md-3 control-label">Password Confirmation</label>
                         <div class="col-md-9">
-                            <input ng-model="user.passwordConfirmation" type="password" class="form-control" name="passwd" placeholder="Password Confirmation">
+                            <input ng-model="user.passwordConfirmation" type="password" class="form-control" name="confirmation" placeholder="Password Confirmation">
                         </div>
                     </div>
                     <div class="form-group">
@@ -49,7 +41,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-3 col-md-9">
-                            <button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
+                            <button id="btn-signup" ng-disabled="signupForm.$invalid" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
                         </div>
                     </div>
                 </form>
