@@ -3,7 +3,6 @@ package models
 import (
   "fmt"
   "golang.org/x/crypto/bcrypt"
-  "encoding/json"
 )
 
 type User struct {
@@ -29,7 +28,7 @@ func (u *User) Validate() error {
 
 func (u *User) Create() error {
   hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-  stmnt, err := db.Prepare("INSERT INTO users(username, email, password, role) VALUES(?, ?, ?, ?)")
+  stmnt, err := db.Prepare("INSERT INTO users(username, email, password, role) VALUES($1, $2, $3, $4)")
 
   if err == nil {
     result, _ := stmnt.Exec(u.Username, u.Email, hashedPassword, u.Role)
