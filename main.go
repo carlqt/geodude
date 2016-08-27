@@ -4,6 +4,7 @@ import (
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
 	"github.com/carlqt/geodude/controllers/properties"
+	"github.com/carlqt/geodude/controllers/user"
 	// "github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -47,6 +48,8 @@ func main() {
 		api.POST("/property", properties.PropertyCreate)
 		api.GET("/geocode", properties.PropertyGeocode)
 		api.DELETE("/property/:id", paramToInt(), properties.PropertyDelete)
+
+		api.POST("/user", user.Create)
 	}
 
 	router.Run(":8000")
