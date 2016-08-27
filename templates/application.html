@@ -3,23 +3,27 @@
     <title>{{.Title}}</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/stylesheets/application.css">
+    <link rel="stylesheet" type="text/css" href="assets/stylesheets/login_register_form.css">
   </head>
   <body>
     {{ template "navbar.html" }}
 
     <div class="container" ng-cloak>
       <div class="location-wrapper">
-        <div ui-view></div>
+        <div ui-view class="well"></div>
       </div>
 
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHnDL8CFN4Z7_FmoEQ7fHwrR-1dAsNH68&libraries=places"></script>
     <script src="assets/javascripts/application.js"></script>
     <script src="assets/javascripts/agent-controller.js"></script>
+    <script src="assets/javascripts/sessions-controller.js"></script>
+    <script src="assets/javascripts/registrations-controller.js"></script>
     <script src="assets/javascripts/ngAutocomplete.js"></script>
   </body>
 </html>
