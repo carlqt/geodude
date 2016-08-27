@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
-	"github.com/carlqt/geodude/controllers"
+	"github.com/carlqt/geodude/controllers/properties"
 	// "github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -37,16 +37,16 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/ping", beforePong(), pong)
-	router.GET("/newping", controllers.Pong)
+	router.GET("/newping", properties.Pong)
 	router.GET("/", Index)
 
 	api := router.Group("/api")
 	{
-		api.GET("/search", controllers.PropertySearch)
-		api.GET("/properties", controllers.PropertyIndex)
-		api.POST("/property", controllers.PropertyCreate)
-		api.GET("/geocode", controllers.PropertyGeocode)
-		api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
+		api.GET("/search", properties.PropertySearch)
+		api.GET("/properties", properties.PropertyIndex)
+		api.POST("/property", properties.PropertyCreate)
+		api.GET("/geocode", properties.PropertyGeocode)
+		api.DELETE("/property/:id", paramToInt(), properties.PropertyDelete)
 	}
 
 	router.Run(":8000")
