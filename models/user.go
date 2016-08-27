@@ -3,18 +3,19 @@ package models
 import (
   "fmt"
   "golang.org/x/crypto/bcrypt"
+  "encoding/json"
 )
 
 type User struct {
-  ID int
-  Email string
-  Username string
-  Password string
-  PasswordConfirmation string
-  FirstName string
-  LastName string
-  ContactNumber string
-  Role string
+  ID int `json:"id"`
+  Email string `json:"email"`
+  Username string `json:"username"`
+  Password string `json:"password"`
+  PasswordConfirmation string `json:",omitempty"`
+  FirstName string `json:"first_name"`
+  LastName string `json:"last_name"`
+  ContactNumber string `json:"contact"`
+  Role string `json:"role"`
 }
 
 func (u *User) Validate() error {
