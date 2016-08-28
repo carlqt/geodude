@@ -28,14 +28,40 @@ func (u *User) Validate() error {
 
 func (u *User) Create() error {
   hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-  stmnt, err := db.Prepare("INSERT INTO users(username, email, password, role) VALUES($1, $2, $3, $4)")
+  err := db.QueryRow("INSERT INTO users(username, email, password, role) VALUES($1, $2, $3, $4) returning id", 
+    u.Username, u.Email, hashedPassword, u.Role).Scan(&u.ID)
+
 
   if err == nil {
-    result, _ := stmnt.Exec(u.Username, u.Email, hashedPassword, u.Role)
-    id, _ := result.LastInsertId()
-    u.ID = int(id)
     return nil
   } else {
     return err
   }
 }
+
+// func (u *User) Authenticate() error{
+//   var hashedPassword []byte
+
+//   rows, err := db.Query("SELECT id, password FROM users WHERE username = $1", u.Username)
+//   defer rows.Close()
+
+//   if err != nil {
+//     return err
+//   }
+
+//   for rows.Next() {
+//     err := rows.Scan(&u.ID, &hashedPassword)
+
+//     if err != nil {
+//       revel.ERROR.Println(err)
+//     }
+//   }
+
+//   err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(u.Password))
+
+//   if err != nil {
+//     return false
+//   } else {
+//     return true
+//   }
+// }
