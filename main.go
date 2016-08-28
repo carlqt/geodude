@@ -1,16 +1,16 @@
 package main
 
 import (
-	"strings"
 	"fmt"
-	"github.com/carlqt/geodude/controllers"
+	"github.com/carlqt/geodude/controllers/properties"
+	"github.com/carlqt/geodude/controllers/user"
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
 	"github.com/dgrijalva/jwt-go"
-	_ "github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -41,18 +41,20 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/ping", beforePong(), pong)
-	router.GET("/newping", controllers.Pong)
+	router.GET("/newping", properties.Pong)
 	router.GET("/", Index)
 	router.GET("/token/display", displayToken)
 	router.POST("/token/create", createToken)
 
 	api := router.Group("/api")
 	{
-		api.GET("/search", controllers.PropertySearch)
-		api.GET("/properties", jwtAuthenticater(), controllers.PropertyIndex)
-		api.POST("/property", controllers.PropertyCreate)
-		api.GET("/geocode", controllers.PropertyGeocode)
-		api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
+		api.GET("/search", properties.PropertySearch)
+		api.GET("/properties", properties.PropertyIndex)
+		api.POST("/property", properties.PropertyCreate)
+		api.GET("/geocode", properties.PropertyGeocode)
+		api.DELETE("/property/:id", paramToInt(), properties.PropertyDelete)
+
+		api.POST("/user", user.Create)
 	}
 
 	router.Run(":8000")
@@ -141,12 +143,12 @@ func jwtAuthenticater() gin.HandlerFunc {
 	}
 }
 
-func validateToken(h http.Header) error{
+func validateToken(h http.Header) error {
 	authHeader := h.Get("Authorization")
 
 	if authHeader == "" {
 		return fmt.Errorf("Authorization header not found")
-	}	
+	}
 
 	headerString := strings.Split(authHeader, " ")
 

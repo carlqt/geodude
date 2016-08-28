@@ -1,4 +1,4 @@
-package controllers
+package properties
 
 import(
   "github.com/shopspring/decimal"
@@ -44,7 +44,6 @@ func PropertyCreate(c *gin.Context) {
 
   property, err = property.GeocodeAndCreate()
 
-  _ = "breakpoint"
   if err != nil {
     color.Red(err.Error())
     c.JSON(500, gin.H{
