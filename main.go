@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/carlqt/geodude/controllers"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/carlqt/geodude/controllers/properties"
+	"github.com/carlqt/geodude/controllers/user"
 	"github.com/carlqt/geodude/geocode"
 	"github.com/carlqt/geodude/models"
 	"github.com/dgrijalva/jwt-go"
-	_ "github.com/fatih/color"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 func checkErr(err error) {
@@ -40,18 +42,25 @@ func main() {
 	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/ping", beforePong(), pong)
-	router.GET("/newping", controllers.Pong)
+	router.GET("/newping", properties.Pong)
 	router.GET("/", Index)
 	router.GET("/token/display", displayToken)
 	router.POST("/token/create", createToken)
 
 	api := router.Group("/api")
 	{
-		api.GET("/search", controllers.PropertySearch)
-		api.GET("/properties", jwtAuthenticate(), controllers.PropertyIndex)
-		api.POST("/property", controllers.PropertyCreate)
-		api.GET("/geocode", controllers.PropertyGeocode)
-		api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
+		// api.GET("/search", controllers.PropertySearch)
+		// api.GET("/properties", jwtAuthenticate(), controllers.PropertyIndex)
+		// api.POST("/property", controllers.PropertyCreate)
+		// api.GET("/geocode", controllers.PropertyGeocode)
+		// api.DELETE("/property/:id", paramToInt(), controllers.PropertyDelete)
+		api.GET("/search", properties.PropertySearch)
+		api.GET("/properties", properties.PropertyIndex)
+		api.POST("/property", properties.PropertyCreate)
+		api.GET("/geocode", properties.PropertyGeocode)
+		api.DELETE("/property/:id", paramToInt(), properties.PropertyDelete)
+
+		api.POST("/user", user.Create)
 	}
 
 	router.Run(":8000")
@@ -114,7 +123,9 @@ func createToken(c *gin.Context) {
 }
 
 func displayToken(c *gin.Context) {
-	tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDE2LTA4LTAyVDE4OjAxOjU3LjM0MzE2NDI3KzA4OjAwIiwiaWQiOiIxIiwidHlwZSI6ImFnZW50In0.gRdkq1qNrN3-cyiQEGyUauYlsGlJSTmTKkLUq1K3M7g"
+	authHeader := c.Request.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, " ")[1]
+	// tokenString := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIyMDE2LTA4LTAyVDE4OjAxOjU3LjM0MzE2NDI3KzA4OjAwIiwiaWQiOiIxIiwidHlwZSI6ImFnZW50In0.gRdkq1qNrN3-cyiQEGyUauYlsGlJSTmTKkLUq1K3M7g"
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Error")
@@ -127,5 +138,47 @@ func displayToken(c *gin.Context) {
 		c.JSON(200, claims)
 	} else {
 		c.String(400, err.Error())
+	}
+}
+
+func jwtAuthenticater() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := validateToken(c.Request.Header)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"error": err.Error(),
+			})
+			c.Abort()
+		} else {
+			c.Next()
+		}
+	}
+}
+
+func validateToken(h http.Header) error {
+	authHeader := h.Get("Authorization")
+
+	if authHeader == "" {
+		return fmt.Errorf("Authorization header not found")
+	}
+
+	headerString := strings.Split(authHeader, " ")
+
+	if headerString[0] != "Bearer" {
+		return fmt.Errorf("Invalid authorization type")
+	}
+
+	_, err := jwt.Parse(headerString[1], func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Invalid algorithm type")
+		}
+
+		return []byte("glassdoor"), nil
+	})
+
+	if err != nil {
+		return err
+	} else {
+		return nil
 	}
 }

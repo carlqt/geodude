@@ -1,6 +1,6 @@
 // Able to delete newly created records
 
-var newApp = angular.module('newApp', ['ui.router', 'ngAutocomplete']);
+var newApp = angular.module('newApp', ['ui.router', 'ngAutocomplete', 'ngAnimate']);
 
 // 2 ways to create a service
 newApp.service('demoService', function() {
@@ -12,6 +12,11 @@ newApp.factory('demoFactory', function() {
   fac.users = ['John', "James", "Jake"]
   return fac;
 });
+
+newApp.service('formStates', function() {
+  this.loginForm = true;
+  this.registerForm = false;
+})
 
 //--------------------------
 
@@ -36,11 +41,19 @@ newApp.config(function($interpolateProvider, $stateProvider, $urlRouterProvider)
       $scope.dogs = ['Bernese', 'Corgi', 'Husky'];
       console.log($scope.dogs);
     }
+  }).state('sessions', {
+    url: '/login',
+    templateUrl: '/assets/templates/sessions_form.html',
+    controller: 'sessionsController'
+  }).state('registration', {
+    url: '/sign_up',
+    templateUrl: '/assets/templates/registration_form.html',
+    controller: 'registrationsController'
   });
 });
 
 newApp.controller('newAppController', function newAppController($scope, $http, demoService) {
-  console.log(demoService.users); // Example on how to use a service in your controller
+  // console.log(demoService.users); // Example on how to use a service in your controller
 
   $scope.locations = []
   var config = {
