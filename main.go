@@ -45,7 +45,7 @@ func main() {
 	router.GET("/newping", properties.Pong)
 	router.GET("/", Index)
 	router.GET("/token/display", displayToken)
-	router.POST("/token/create", createToken)
+	// router.POST("/token/create", createToken)
 
 	api := router.Group("/api")
 	{
@@ -106,20 +106,17 @@ func jwtAuthenticate() gin.HandlerFunc {
 	}
 }
 
-func createToken(c *gin.Context) {
+func createToken(u models.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   "1",
-		"iat":  time.Now().Local(),
-		"type": "agent",
+		"id":       u.ID,
+		"iat":      time.Now().Local(),
+		"type":     u.Role,
+		"eat":      time.Now().Local().AddDate(0, 0, 7),
+		"username": u.Username,
+		"email":    u.Email,
 	})
 
-	tokenString, err := token.SignedString([]byte("glassdoor"))
-
-	if err != nil {
-		c.String(400, err.Error())
-	} else {
-		c.String(200, tokenString)
-	}
+	return token.SignedString([]byte("glassdoor"))
 }
 
 func displayToken(c *gin.Context) {
