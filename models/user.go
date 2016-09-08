@@ -39,29 +39,28 @@ func (u *User) Create() error {
   }
 }
 
-// func (u *User) Authenticate() error{
-//   var hashedPassword []byte
+func (u *User) Authenticate() error{
+  var hashedPassword []byte
 
-//   rows, err := db.Query("SELECT id, password FROM users WHERE username = $1", u.Username)
-//   defer rows.Close()
+  rows, err := db.Query("SELECT id, password FROM users WHERE username = $1", u.Username)
+  defer rows.Close()
 
-//   if err != nil {
-//     return err
-//   }
+  if err != nil {
+    return err
+  }
 
-//   for rows.Next() {
-//     err := rows.Scan(&u.ID, &hashedPassword)
+  for rows.Next() {
+    err := rows.Scan(&u.ID, &hashedPassword)
 
-//     if err != nil {
-//       revel.ERROR.Println(err)
-//     }
-//   }
+    if err != nil {
+    }
+  }
 
-//   err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(u.Password))
+  err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(u.Password))
 
-//   if err != nil {
-//     return false
-//   } else {
-//     return true
-//   }
-// }
+  if err != nil {
+    return nil
+  } else {
+    return err
+  }
+}
